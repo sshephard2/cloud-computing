@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class Registration implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Date timestamp;
 	private String street;
@@ -29,65 +30,84 @@ public class Registration implements Serializable {
 		this.town = town;
 		this.speedlimit = speedlimit;
 	}
+	
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
+	
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
 	/**
 	 * @return the timestamp
 	 */
 	public Date getTimestamp() {
 		return timestamp;
 	}
+	
 	/**
 	 * @param timestamp the timestamp to set
 	 */
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+		this.timestamp = (Date)timestamp.clone();
 	}
+	
 	/**
 	 * @return the street
 	 */
 	public String getStreet() {
 		return street;
 	}
+	
 	/**
 	 * @param street the street to set
 	 */
 	public void setStreet(String street) {
 		this.street = street;
 	}
+	
 	/**
 	 * @return the town
 	 */
 	public String getTown() {
 		return town;
 	}
+	
 	/**
 	 * @param town the town to set
 	 */
 	public void setTown(String town) {
 		this.town = town;
 	}
+	
 	/**
 	 * @return the speedlimit
 	 */
 	public int getSpeedlimit() {
 		return speedlimit;
 	}
+	
 	/**
 	 * @param speedlimit the speedlimit to set
 	 */
 	public void setSpeedlimit(int speedlimit) {
 		this.speedlimit = speedlimit;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Registration [id=" + id + ", timestamp=" + timestamp + ", street=" + street + ", town=" + town
+				+ ", speedlimit=" + speedlimit + "]";
 	}
 	
 	

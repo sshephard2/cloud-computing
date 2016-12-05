@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class Sighting implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Date timestamp;
 	private String registration;
@@ -55,7 +56,7 @@ public class Sighting implements Serializable {
 	 * @param timestamp the timestamp to set
 	 */
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+		this.timestamp = (Date)timestamp.clone();
 	}
 
 	/**
@@ -98,5 +99,14 @@ public class Sighting implements Serializable {
 	 */
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Sighting [id=" + id + ", timestamp=" + timestamp + ", registration=" + registration + ", vehicletype="
+				+ vehicletype + ", speed=" + speed + "]";
 	}
 }

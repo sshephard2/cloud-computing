@@ -58,10 +58,7 @@ public class SmartCam {
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Rate argument must be a valid number");
 		}
-		
-		// Create Smart Camera Registration object
-		Registration smartCam = new Registration(id, street, town, speedlimit);
-		
+			
 		// Connect to Azure Service Bus
 		Configuration config =
 			    ServiceBusConfiguration.configureWithSASAuthentication(
@@ -73,10 +70,15 @@ public class SmartCam {
 
 		ServiceBusContract service = ServiceBusService.create(config);
 		
-		// Create message, passing a string message for the body
-		BrokeredMessage message = new BrokeredMessage("Test message ");
-		// Set some additional custom app-specific property
+		// Create Smart Camera Registration object
+		Registration smartCam = new Registration(id, street, town, speedlimit);
+			
+		// Create message
+		BrokeredMessage message = new BrokeredMessage(smartCam.toString());
+		
+		// Set message type to Registration
 		message.setProperty("messagetype", "Registration");
+		
 		// Send message to the topic
 		try {
 			service.sendTopicMessage("cameratopic", message);
