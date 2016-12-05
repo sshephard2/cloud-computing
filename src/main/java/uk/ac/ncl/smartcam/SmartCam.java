@@ -3,10 +3,16 @@
  */
 package uk.ac.ncl.smartcam;
 
-import java.util.Date;
-
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
+import com.microsoft.windowsazure.services.servicebus.*;
+import com.microsoft.windowsazure.services.servicebus.models.*;
+import com.microsoft.windowsazure.Configuration;
+import com.microsoft.windowsazure.core.*;
+import com.microsoft.windowsazure.exception.ServiceException;
+
+import javax.xml.datatype.*;
+
 
 /**
  * Smart Camera runnable application
@@ -53,7 +59,31 @@ public class SmartCam {
 			throw new IllegalArgumentException("Rate argument must be a valid number");
 		}
 		
+		// Create Smart Camera Registration object
 		Registration smartCam = new Registration(id, street, town, speedlimit);
+		
+		// Connect to Azure Service Bus
+		Configuration config =
+			    ServiceBusConfiguration.configureWithSASAuthentication(
+			      "sshephard2",
+			      "RootManageSharedAccessKey",
+			      "u7/GuimIja/8ija5GP4sCWfBjcAqQ6/KXQ3SLDRqf4U=",
+			      ".servicebus.windows.net"
+			      );
+
+		ServiceBusContract service = ServiceBusService.create(config);
+		
+		// Create message, passing a string message for the body
+		BrokeredMessage message = new BrokeredMessage("Test message ");
+		// Set some additional custom app-specific property
+		message.setProperty("messagetype", "Registration");
+		// Send message to the topic
+		try {
+			service.sendTopicMessage("cameratopic", message);
+		} catch (ServiceException e) {
+			// do nothing
+		}
+
 	}
 
 }
