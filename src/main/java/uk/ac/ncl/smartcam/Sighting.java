@@ -1,5 +1,6 @@
 package uk.ac.ncl.smartcam;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Date;
  * @author Stephen Shephard
  *
  */
-public class Sighting {
+public class Sighting implements Serializable {
 	
 	private Long id;
 	private Date timestamp;
