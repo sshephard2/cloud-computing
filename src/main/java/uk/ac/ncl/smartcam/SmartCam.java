@@ -5,14 +5,7 @@ package uk.ac.ncl.smartcam;
 
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
-import com.microsoft.windowsazure.services.servicebus.*;
-import com.microsoft.windowsazure.services.servicebus.models.*;
-import com.microsoft.windowsazure.Configuration;
-import com.microsoft.windowsazure.core.*;
-import com.microsoft.windowsazure.exception.ServiceException;
-
-import javax.xml.datatype.*;
-
+import uk.ac.ncl.smartcam.ServiceBus;
 
 /**
  * Smart Camera runnable application
@@ -20,6 +13,9 @@ import javax.xml.datatype.*;
  *
  */
 public class SmartCam {
+	
+	private static final String namespace = "sshephard2";
+	private static final String apikey = "u7/GuimIja/8ija5GP4sCWfBjcAqQ6/KXQ3SLDRqf4U=";
 
 	/**
 	 * Supply as arguments: camera id, street, town/city, speed limit, rate of traffic (vehicles per minute)
@@ -60,32 +56,11 @@ public class SmartCam {
 		}
 			
 		// Connect to Azure Service Bus
-		Configuration config =
-			    ServiceBusConfiguration.configureWithSASAuthentication(
-			      "sshephard2",
-			      "RootManageSharedAccessKey",
-			      "u7/GuimIja/8ija5GP4sCWfBjcAqQ6/KXQ3SLDRqf4U=",
-			      ".servicebus.windows.net"
-			      );
-
-		ServiceBusContract service = ServiceBusService.create(config);
+		ServiceBus service = new ServiceBus(namespace, apikey);
 		
 		// Create Smart Camera Registration object
 		Registration smartCam = new Registration(id, street, town, speedlimit);
-			
-		// Create message
-		BrokeredMessage message = new BrokeredMessage(smartCam.toString());
-		
-		// Set message type to Registration
-		message.setProperty("messagetype", "Registration");
-		
-		// Send message to the topic
-		try {
-			service.sendTopicMessage("cameratopic", message);
-		} catch (ServiceException e) {
-			// do nothing
-		}
-
+		service.sendMessage(smartCam);
 	}
 
 }
