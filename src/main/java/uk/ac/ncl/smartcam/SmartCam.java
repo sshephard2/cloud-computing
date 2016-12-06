@@ -58,9 +58,10 @@ public class SmartCam {
 		// Connect to Azure Service Bus
 		ServiceBus service = new ServiceBus(namespace, apikey);
 		
-		// Create Smart Camera Registration object
+		// Create Smart Camera Registration object and send it
 		Registration smartCam = new Registration(id, street, town, speedlimit);
-		service.sendMessage(smartCam);
+		service.sendMessage(smartCam, "Registration", false);
+		
 	}
 
 }

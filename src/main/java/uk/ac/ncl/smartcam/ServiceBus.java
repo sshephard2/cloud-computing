@@ -28,7 +28,7 @@ public class ServiceBus {
 		this.service = ServiceBusService.create(config);
 	}
 	
-	public void sendMessage(Object msgObject) {
+	public void sendMessage(Object msgObject, String msgType, boolean speeding) {
 		try {
 			// Serialize to JSON
 			ObjectMapper mapper = new ObjectMapper();
@@ -38,8 +38,13 @@ public class ServiceBus {
 			// Create message
 			BrokeredMessage message = new BrokeredMessage(jsonMessage);
 			
-			// Set message type to Registration
-			message.setProperty("messagetype", "Registration");
+			// Set message type
+			message.setProperty("messagetype", msgType);
+			
+			// If message type is "Sighting", set speeding flag
+			if (msgType.equals("Sighting")) {
+				message.setProperty("speeding", speeding);
+			}
 			
 			// Send message to the topic
 			try {
