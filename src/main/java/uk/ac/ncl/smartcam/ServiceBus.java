@@ -1,5 +1,8 @@
 package uk.ac.ncl.smartcam;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.windowsazure.Configuration;
@@ -12,6 +15,9 @@ import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
 public class ServiceBus {
 	
 	private ServiceBusContract service;
+	
+	// Internal queue to store messages if offline
+	private Queue<BrokeredMessage> msgQueue;
 
 	/**
 	 * Microsoft Azure Service Bus
@@ -26,17 +32,43 @@ public class ServiceBus {
 			      );
 
 		this.service = ServiceBusService.create(config);
+		this.msgQueue = new LinkedList();
 	}
 	
 	public void sendMessage(Object msgObject, String msgType, boolean speeding) {
+		BrokeredMessage message;
+
+		boolean checkQueue = true;
+		
+		// If there are any queued messages, attempt to send them first
+		while (checkQueue && msgQueue.size() > 0) {
+			
+			// Read first element in queue but don't remove yet
+			message = msgQueue.peek();
+			
+			// Attempt to send message to the topic
+			try {
+				System.out.println("Sending queued:" + message.getBody());
+				service.sendTopicMessage("cameratopic", message);
+				
+				// If queue element was successfully sent, remove it
+				message = msgQueue.remove();
+				
+			} catch (ServiceException e) {
+				// If message can't be sent, then stop reading the queue, drop out to the main code
+				// so that the new message to be sent is queued
+				checkQueue = false;
+			}
+		}
+		
 		try {
 			// Serialize to JSON
 			ObjectMapper mapper = new ObjectMapper();
 			String jsonMessage = mapper.writeValueAsString(msgObject);
-			System.out.println("Sending:" + jsonMessage);
+			System.out.println("Sending<" + msgType + ">:" + jsonMessage);
 			
 			// Create message
-			BrokeredMessage message = new BrokeredMessage(jsonMessage);
+			message = new BrokeredMessage(jsonMessage);
 			
 			// Set message type
 			message.setProperty("messagetype", msgType);
@@ -50,7 +82,9 @@ public class ServiceBus {
 			try {
 				service.sendTopicMessage("cameratopic", message);
 			} catch (ServiceException e) {
-				// do nothing
+				// If message can't be sent, then queue it
+				System.out.println("Queueing:" + message.getBody());
+				msgQueue.add(message);
 			}
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
