@@ -15,7 +15,7 @@ public class Sighting implements Serializable {
 	private Date timestamp;
 	private String registration;
 	private String vehicletype;
-	private int speed;
+	private float speed;
 
 	/**
 	 * @param id
@@ -23,7 +23,7 @@ public class Sighting implements Serializable {
 	 * @param vehicletype
 	 * @param speed
 	 */
-	public Sighting(Long id, String registration, String vehicletype, int speed) {
+	public Sighting(Long id, String registration, String vehicletype, float speed) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;
@@ -90,14 +90,14 @@ public class Sighting implements Serializable {
 	/**
 	 * @return the speed
 	 */
-	public int getSpeed() {
+	public float getSpeed() {
 		return speed;
 	}
 
 	/**
 	 * @param speed the speed to set
 	 */
-	public void setSpeed(int speed) {
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
 

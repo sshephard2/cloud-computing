@@ -3,6 +3,8 @@
  */
 package uk.ac.ncl.smartcam;
 
+import java.util.Random;
+
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
 import uk.ac.ncl.smartcam.ServiceBus;
@@ -62,6 +64,61 @@ public class SmartCam {
 		Registration smartCam = new Registration(id, street, town, speedlimit);
 		service.sendMessage(smartCam, "Registration", false);
 		
+		// Now run repeatedly, sending the specified rate of vehicles per minute
+		boolean running = true;
+		
+		// Random number generator
+		Random rndGen = new Random();
+		
+		// Sightings variables
+		float speed;
+		String registration;
+		String vehicletype;
+		boolean speeding;
+		
+		while(running) {
+			// Create random sighting
+			
+			// Vehicle type
+			switch(rndGen.nextInt(3)) {
+				case 0: vehicletype="Car";
+				break;
+				
+				case 1: vehicletype="Truck";
+				break;
+				
+				default: vehicletype="Motorcycle";
+				break;				
+			}
+			
+			// Registration
+			registration = String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = registration + rndGen.nextInt(10);
+			registration = registration + rndGen.nextInt(10);
+			registration = registration + " ";
+			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			
+			// Speed
+			speed = rndGen.nextFloat()*2*speedlimit;
+			
+			// Create Sighting object
+			Sighting camSighting = new Sighting(id, registration, vehicletype, speed);
+
+			// If speed is greater than speedlimit, then set speeding flag to true
+			speeding = (speed > (float)speedlimit);
+			
+			// Send sighting message
+			service.sendMessage(camSighting, "Sighting", speeding);
+			
+			try {
+				Thread.sleep(60000/rate); // rate is vehicles per minute, so sleep for 60,000ms/rate
+			} catch (InterruptedException e) {
+				running = false;
+			}			
+		}
 	}
 
 }
