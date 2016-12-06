@@ -1,6 +1,9 @@
 package uk.ac.ncl.smartcam;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.Queue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,18 +24,35 @@ public class ServiceBus {
 
 	/**
 	 * Microsoft Azure Service Bus
-	 * @param namespace
-	 * @param key
+	 * @throws Exception 
 	 */
-	public ServiceBus(String namespace, String key) {
+	public ServiceBus() throws Exception {
 		
+        // Retrieve the connection string
+        Properties prop = new Properties();
+        try {
+            InputStream propertyStream = ServiceBus.class.getClassLoader().getResourceAsStream("config.properties");
+            if (propertyStream != null) {
+                prop.load(propertyStream);
+            }
+            else {
+                throw new RuntimeException();
+            }
+        } catch (RuntimeException|IOException e) {
+            System.out.println("\nFailed to load config.properties file.");
+            throw e;
+        }
+
+        String namespace = prop.getProperty("ServiceBusNamespace");
+        String key = prop.getProperty("ServiceBusKey");
+            
 		Configuration config =
 			    ServiceBusConfiguration.configureWithSASAuthentication(
 			      namespace, "RootManageSharedAccessKey", key, ".servicebus.windows.net"
 			      );
 
 		this.service = ServiceBusService.create(config);
-		this.msgQueue = new LinkedList();
+		this.msgQueue = new LinkedList<BrokeredMessage>();
 	}
 	
 	public void sendMessage(Object msgObject, String msgType, boolean speeding) {

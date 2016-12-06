@@ -11,13 +11,10 @@ import uk.ac.ncl.smartcam.ServiceBus;
 
 /**
  * Smart Camera runnable application
- *  * @author Stephen Shephard
+ * @author Stephen Shephard
  *
  */
 public class SmartCam {
-	
-	private static final String namespace = "sshephard2";
-	private static final String apikey = "u7/GuimIja/8ija5GP4sCWfBjcAqQ6/KXQ3SLDRqf4U=";
 
 	/**
 	 * Supply as arguments: camera id, street, town/city, speed limit, rate of traffic (vehicles per minute)
@@ -58,7 +55,14 @@ public class SmartCam {
 		}
 			
 		// Connect to Azure Service Bus
-		ServiceBus service = new ServiceBus(namespace, apikey);
+		ServiceBus service;
+		try {
+			service = new ServiceBus();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
 		
 		// Create Smart Camera Registration object and send it
 		Registration smartCam = new Registration(id, street, town, speedlimit);
