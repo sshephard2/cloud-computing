@@ -123,32 +123,39 @@ public class ServiceBus {
 	}
 	
 	/**
-	 * Receive and delete a message from a subscription
+	 * Receive a message from a subscription
 	 * @param subscription
 	 * @return
 	 */
-	public Object receiveDeleteMessage(String subscription) {
+	public Object receiveMessage(String subscription) {
 		Object msgObject = null;
 		String msgType;
 		ObjectMapper mapper = new ObjectMapper();
+		
+		ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
+		opts.setPeekLock(); // Peeklock does not automatically delete messages
+		opts.setTimeout(5); // Set timeout to 5s
 
 		try
 		{
-			ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
-			opts.setReceiveAndDelete();
-
+			// Receive a message from the selected subscription
 			ReceiveSubscriptionMessageResult resultSubMsg =
 					service.receiveSubscriptionMessage("cameratopic", subscription, opts);
 			BrokeredMessage message = resultSubMsg.getValue();
 			if (message != null && message.getMessageId() != null)
 			{
+				// Delete message now, once safely received
+				// But if it is an invalid message, it will not block the susbcription
+				service.deleteMessage(message);
+				
 				// Get the message type
 				msgType = (String)message.getProperty("messagetype");				
 				if (msgType.equals("Sighting")) {
 					msgObject = mapper.readValue(message.getBody(), Sighting.class);
 				} else if (msgType.equals("Registration")) {
 					msgObject = mapper.readValue(message.getBody(), Registration.class);
-				}
+				}				
+
 			}  
 			else
 			{

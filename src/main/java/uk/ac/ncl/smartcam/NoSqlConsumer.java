@@ -18,9 +18,11 @@ public class NoSqlConsumer {
 		}
 		
 		Object message;
+		
+		int i=0;
 
 		while(true) {
-			message = service.receiveDeleteMessage("AllMessages");
+			message = service.receiveMessage("AllMessages");
 			
 			if (message instanceof Registration) {
 				System.out.println("Registration:" + message.toString());				
@@ -28,6 +30,8 @@ public class NoSqlConsumer {
 				System.out.println("Sighting:" + message.toString());	
 			} else {
 				// Do nothing
+				System.out.println("Tick:" + i);
+				i = i + 1;
 			}
 			
 		}
