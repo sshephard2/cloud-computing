@@ -14,6 +14,8 @@ import com.microsoft.windowsazure.services.servicebus.ServiceBusConfiguration;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusService;
 import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
+import com.microsoft.windowsazure.services.servicebus.models.ReceiveMessageOptions;
+import com.microsoft.windowsazure.services.servicebus.models.ReceiveSubscriptionMessageResult;
 
 public class ServiceBus {
 	
@@ -55,6 +57,12 @@ public class ServiceBus {
 		this.msgQueue = new LinkedList<BrokeredMessage>();
 	}
 	
+	/**
+	 * Send a message object (serialised to a JSON string) to the topic
+	 * @param msgObject
+	 * @param msgType
+	 * @param speeding
+	 */
 	public void sendMessage(Object msgObject, String msgType, boolean speeding) {
 		BrokeredMessage message;
 
@@ -110,5 +118,59 @@ public class ServiceBus {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Receive and delete a message from a subscription
+	 * @param subscription
+	 * @return
+	 */
+	public Object receiveDeleteMessage(String subscription) {
+		Object msgObject = null;
 
+		try
+		{
+			ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
+			opts.setReceiveAndDelete();
+
+			ReceiveSubscriptionMessageResult resultSubMsg =
+					service.receiveSubscriptionMessage("cameratopic", subscription, opts);
+			BrokeredMessage message = resultSubMsg.getValue();
+			if (message != null && message.getMessageId() != null)
+			{
+				System.out.println("MessageID: " + message.getMessageId());
+				// Display the topic message.
+				System.out.print("From topic: ");
+				byte[] b = new byte[200];
+				String s = null;
+				int numRead = message.getBody().read(b);
+				while (-1 != numRead)
+				{
+					s = new String(b);
+					s = s.trim();
+					System.out.print(s);
+					numRead = message.getBody().read(b);
+				}
+				System.out.println();
+				System.out.println("Custom Property: " +
+						message.getProperty("messagetype"));
+				msgObject = message.getBody();
+			}  
+			else  
+			{
+				System.out.println("No message");
+			}
+		}
+		catch (ServiceException e) {
+			System.out.print("ServiceException encountered: ");
+			System.out.println(e.getMessage());
+			System.exit(-1);
+		}
+		catch (Exception e) {
+			System.out.print("Generic exception encountered: ");
+			System.out.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		return msgObject;
+	}
 }
