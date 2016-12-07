@@ -17,6 +17,9 @@ import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
 import com.microsoft.windowsazure.services.servicebus.models.ReceiveMessageOptions;
 import com.microsoft.windowsazure.services.servicebus.models.ReceiveSubscriptionMessageResult;
 
+import uk.ac.ncl.smartcam.Registration;
+import uk.ac.ncl.smartcam.Sighting;
+
 public class ServiceBus {
 	
 	private ServiceBusContract service;
@@ -126,6 +129,8 @@ public class ServiceBus {
 	 */
 	public Object receiveDeleteMessage(String subscription) {
 		Object msgObject = null;
+		String msgType;
+		ObjectMapper mapper = new ObjectMapper();
 
 		try
 		{
@@ -137,38 +142,28 @@ public class ServiceBus {
 			BrokeredMessage message = resultSubMsg.getValue();
 			if (message != null && message.getMessageId() != null)
 			{
-				System.out.println("MessageID: " + message.getMessageId());
-				// Display the topic message.
-				System.out.print("From topic: ");
-				byte[] b = new byte[200];
-				String s = null;
-				int numRead = message.getBody().read(b);
-				while (-1 != numRead)
-				{
-					s = new String(b);
-					s = s.trim();
-					System.out.print(s);
-					numRead = message.getBody().read(b);
+				// Get the message type
+				msgType = (String)message.getProperty("messagetype");				
+				if (msgType.equals("Sighting")) {
+					msgObject = mapper.readValue(message.getBody(), Sighting.class);
+				} else if (msgType.equals("Registration")) {
+					msgObject = mapper.readValue(message.getBody(), Registration.class);
 				}
-				System.out.println();
-				System.out.println("Custom Property: " +
-						message.getProperty("messagetype"));
-				msgObject = message.getBody();
 			}  
-			else  
+			else
 			{
-				System.out.println("No message");
+				// Will return null msgObject
 			}
 		}
 		catch (ServiceException e) {
 			System.out.print("ServiceException encountered: ");
 			System.out.println(e.getMessage());
-			System.exit(-1);
+			// Will return null msgObject
 		}
 		catch (Exception e) {
 			System.out.print("Generic exception encountered: ");
 			System.out.println(e.getMessage());
-			System.exit(-1);
+			// Will return null msgObject
 		}
 
 		return msgObject;

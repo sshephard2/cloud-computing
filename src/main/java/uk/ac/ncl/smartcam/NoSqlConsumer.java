@@ -21,7 +21,15 @@ public class NoSqlConsumer {
 
 		while(true) {
 			message = service.receiveDeleteMessage("AllMessages");
-			System.out.println(message.getClass().getName()); // will use instanceof later
+			
+			if (message instanceof Registration) {
+				System.out.println("Registration:" + message.toString());				
+			} else if (message instanceof Sighting) {
+				System.out.println("Sighting:" + message.toString());	
+			} else {
+				// Do nothing
+			}
+			
 		}
 		
 	}

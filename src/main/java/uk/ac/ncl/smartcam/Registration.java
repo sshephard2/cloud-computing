@@ -18,10 +18,18 @@ public class Registration implements Serializable {
 	private int speedlimit;
 	
 	/**
-	 * @param id
-	 * @param street
-	 * @param town
-	 * @param speedlimit
+	 * No-arg constructor for Jackson JSON serialization
+	 */
+	public Registration() {
+		// Do nothing
+	}	
+	
+	/**
+	 * Constructor for Smart Camera Registration message
+	 * @param id camera id
+	 * @param street street name
+	 * @param town town/city
+	 * @param speedlimit speed limit in mph
 	 */
 	public Registration(Long id, String street, String town, int speedlimit) {
 		this.id = id;

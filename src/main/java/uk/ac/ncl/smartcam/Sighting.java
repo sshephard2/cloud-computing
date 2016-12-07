@@ -18,10 +18,18 @@ public class Sighting implements Serializable {
 	private float speed;
 
 	/**
-	 * @param id
-	 * @param registration
-	 * @param vehicletype
-	 * @param speed
+	 * No-arg constructor for Jackson JSON serialization
+	 */
+	public Sighting() {
+		// Do nothing
+	}
+	
+	/**
+	 * Constructor for Smart Camera Sighting message
+	 * @param id camera id
+	 * @param registration vehicle registration number
+	 * @param vehicletype type of vehicle Car|Truck|Motorcycle
+	 * @param speed speed of vehicle in mph
 	 */
 	public Sighting(Long id, String registration, String vehicletype, float speed) {
 		this.id = id;
