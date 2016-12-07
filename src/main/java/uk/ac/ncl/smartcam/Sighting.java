@@ -3,19 +3,21 @@ package uk.ac.ncl.smartcam;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.microsoft.azure.storage.table.TableServiceEntity;
+
 /**
  * Smart Camera Sighting message object
  * @author Stephen Shephard
  *
  */
-public class Sighting implements Serializable {
+public class Sighting extends TableServiceEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Date timestamp;
 	private String registration;
 	private String vehicletype;
-	private float speed;
+	private int speed;
 
 	/**
 	 * No-arg constructor for Jackson JSON serialization
@@ -31,7 +33,7 @@ public class Sighting implements Serializable {
 	 * @param vehicletype type of vehicle Car|Truck|Motorcycle
 	 * @param speed speed of vehicle in mph
 	 */
-	public Sighting(Long id, String registration, String vehicletype, float speed) {
+	public Sighting(Long id, String registration, String vehicletype, int speed) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;
@@ -51,6 +53,7 @@ public class Sighting implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+        this.partitionKey = id.toString(); // PartitionKey
 	}
 
 	/**
@@ -65,6 +68,7 @@ public class Sighting implements Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = (Date)timestamp.clone();
+        this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 
 	/**
@@ -98,14 +102,14 @@ public class Sighting implements Serializable {
 	/**
 	 * @return the speed
 	 */
-	public float getSpeed() {
+	public int getSpeed() {
 		return speed;
 	}
 
 	/**
 	 * @param speed the speed to set
 	 */
-	public void setSpeed(float speed) {
+	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
 

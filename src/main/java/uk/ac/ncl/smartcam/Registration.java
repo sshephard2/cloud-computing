@@ -3,12 +3,14 @@ package uk.ac.ncl.smartcam;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.microsoft.azure.storage.table.TableServiceEntity;
+
 /**
  * Smart Camera Registration message object
  * @author Stephen Shephard
  *
  */
-public class Registration implements Serializable {
+public class Registration extends TableServiceEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
@@ -51,6 +53,7 @@ public class Registration implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+        this.partitionKey = id.toString(); // PartitionKey
 	}
 	
 	/**
@@ -65,6 +68,7 @@ public class Registration implements Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = (Date)timestamp.clone();
+        this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 	
 	/**

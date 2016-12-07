@@ -75,7 +75,7 @@ public class SmartCam {
 		Random rndGen = new Random();
 		
 		// Sightings variables
-		float speed;
+		int speed;
 		String registration;
 		String vehicletype;
 		boolean speeding;
@@ -106,13 +106,13 @@ public class SmartCam {
 			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
 			
 			// Speed
-			speed = rndGen.nextFloat()*2*speedlimit;
+			speed = rndGen.nextInt(2*speedlimit);
 			
 			// Create Sighting object
 			Sighting camSighting = new Sighting(id, registration, vehicletype, speed);
 
 			// If speed is greater than speedlimit, then set speeding flag to true
-			speeding = (speed > (float)speedlimit);
+			speeding = (speed > speedlimit);
 			
 			// Send sighting message
 			service.sendMessage(camSighting, "Sighting", speeding);

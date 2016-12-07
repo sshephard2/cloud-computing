@@ -3,6 +3,7 @@ package uk.ac.ncl.smartcam;
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
 import uk.ac.ncl.smartcam.ServiceBus;
+import uk.ac.ncl.smartcam.TableStorage;
 
 public class NoSqlConsumer {
 	
@@ -14,8 +15,17 @@ public class NoSqlConsumer {
 		ServiceBus service;
 		try {
 			service = new ServiceBus();
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		// Connect to Azure Table Storage
+		TableStorage tableService;
+		try {
+			tableService = new TableStorage();
+		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 		
@@ -36,9 +46,17 @@ public class NoSqlConsumer {
 				message = service.receiveMessage(AllMessages);
 
 				if (message instanceof Registration) {
-					System.out.println("Registration:" + message.toString());				
+					System.out.println("Registration:" + message.toString());
+					
+					// Insert into registrations table
+					tableService.tableInsert("registrations", (Registration)message);
+					
 				} else if (message instanceof Sighting) {
-					System.out.println("Sighting:" + message.toString());	
+					System.out.println("Sighting:" + message.toString());
+					
+					// Insert into sightings table
+					tableService.tableInsert("sightings", (Sighting)message);
+					
 				} else {
 					// Do nothing
 				}
