@@ -14,8 +14,10 @@ import com.microsoft.windowsazure.services.servicebus.ServiceBusConfiguration;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusContract;
 import com.microsoft.windowsazure.services.servicebus.ServiceBusService;
 import com.microsoft.windowsazure.services.servicebus.models.BrokeredMessage;
+import com.microsoft.windowsazure.services.servicebus.models.GetSubscriptionResult;
 import com.microsoft.windowsazure.services.servicebus.models.ReceiveMessageOptions;
 import com.microsoft.windowsazure.services.servicebus.models.ReceiveSubscriptionMessageResult;
+import com.microsoft.windowsazure.services.servicebus.models.SubscriptionInfo;
 
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
@@ -23,9 +25,9 @@ import uk.ac.ncl.smartcam.Sighting;
 public class ServiceBus {
 	
 	private ServiceBusContract service;
-	
-	// Internal queue to store messages if offline
-	private Queue<BrokeredMessage> msgQueue;
+	private Queue<BrokeredMessage> msgQueue; // Internal queue to store messages if offline
+	private String topic;
+	private int receiveTimeout;
 
 	/**
 	 * Microsoft Azure Service Bus
@@ -50,6 +52,8 @@ public class ServiceBus {
 
         String namespace = prop.getProperty("ServiceBusNamespace");
         String key = prop.getProperty("ServiceBusKey");
+        this.topic = prop.getProperty("Topic");
+        this.receiveTimeout = Integer.parseInt(prop.getProperty("ReceiveTimeout"));
             
 		Configuration config =
 			    ServiceBusConfiguration.configureWithSASAuthentication(
@@ -62,9 +66,9 @@ public class ServiceBus {
 	
 	/**
 	 * Send a message object (serialised to a JSON string) to the topic
-	 * @param msgObject
-	 * @param msgType
-	 * @param speeding
+	 * @param msgObject the message as an object
+	 * @param msgType the type of message (Registration|Sighting)
+	 * @param speeding a flag to say whether or not this Sighting is a speeding vehicle
 	 */
 	public void sendMessage(Object msgObject, String msgType, boolean speeding) {
 		BrokeredMessage message;
@@ -80,7 +84,7 @@ public class ServiceBus {
 			// Attempt to send message to the topic
 			try {
 				System.out.println("Sending queued:" + message.getBody());
-				service.sendTopicMessage("cameratopic", message);
+				service.sendTopicMessage(topic, message);
 				
 				// If queue element was successfully sent, remove it
 				message = msgQueue.remove();
@@ -111,7 +115,7 @@ public class ServiceBus {
 			
 			// Send message to the topic
 			try {
-				service.sendTopicMessage("cameratopic", message);
+				service.sendTopicMessage(topic, message);
 			} catch (ServiceException e) {
 				// If message can't be sent, then queue it
 				System.out.println("Queueing:" + message.getBody());
@@ -123,9 +127,25 @@ public class ServiceBus {
 	}
 	
 	/**
+	 * Count the number of messages on a subscription
+	 * @param subscription name of subscription
+	 * @return the number of messages or null in the event of error
+	 */
+	public Long messageCount(String subscription) {
+		Long count = null;
+		try {
+			SubscriptionInfo s = service.getSubscription(topic, subscription).getValue();
+			count = s.getMessageCount();
+		} catch (ServiceException e1) {
+			e1.printStackTrace();
+		}
+		return count;
+	}
+	
+	/**
 	 * Receive a message from a subscription
-	 * @param subscription
-	 * @return
+	 * @param subscription name of subscription
+	 * @return the message as an object or null if no valid message is received
 	 */
 	public Object receiveMessage(String subscription) {
 		Object msgObject = null;
@@ -134,13 +154,13 @@ public class ServiceBus {
 		
 		ReceiveMessageOptions opts = ReceiveMessageOptions.DEFAULT;
 		opts.setPeekLock(); // Peeklock does not automatically delete messages
-		opts.setTimeout(5); // Set timeout to 5s
+		opts.setTimeout(receiveTimeout); // Set timeout
 
 		try
 		{
 			// Receive a message from the selected subscription
 			ReceiveSubscriptionMessageResult resultSubMsg =
-					service.receiveSubscriptionMessage("cameratopic", subscription, opts);
+					service.receiveSubscriptionMessage(topic, subscription, opts);
 			BrokeredMessage message = resultSubMsg.getValue();
 			if (message != null && message.getMessageId() != null)
 			{
