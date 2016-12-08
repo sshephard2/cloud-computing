@@ -42,7 +42,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 		this.vehicletype = vehicletype;
 		this.speed = speed;
 		this.speedlimit = speedlimit;
-		this.partitionKey = registration; // PartitionKey
+		this.partitionKey = id.toString(); // PartitionKey
 		this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 
@@ -58,6 +58,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+		this.partitionKey = id.toString(); // PartitionKey
 	}
 
 	/**
@@ -87,7 +88,6 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setRegistration(String registration) {
 		this.registration = registration;
-        this.partitionKey = registration; // PartitionKey
 	}
 
 	/**

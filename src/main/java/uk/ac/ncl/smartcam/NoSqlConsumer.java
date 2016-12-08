@@ -3,6 +3,8 @@ package uk.ac.ncl.smartcam;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.microsoft.azure.storage.table.TableEntity;
+
 import uk.ac.ncl.smartcam.Registration;
 import uk.ac.ncl.smartcam.Sighting;
 import uk.ac.ncl.smartcam.ServiceBus;
@@ -36,8 +38,8 @@ public class NoSqlConsumer {
 		
 		Object message;
 		Long messageCount;
-		Queue<Registration> registrations = new LinkedList<Registration>();
-		Queue<Sighting> sightings = new LinkedList<Sighting>();
+		Queue<TableEntity> registrations = new LinkedList<TableEntity>();
+		Queue<TableEntity> sightings = new LinkedList<TableEntity>();
 
 		// Run until interrupted
 		boolean running = true;
@@ -48,31 +50,44 @@ public class NoSqlConsumer {
 			messageCount = service.messageCount(AllMessages);
 			System.out.println("Subscription " + AllMessages + ":" + messageCount + " messages");
 			
-			// Read in all the messages
+			// Clear the queues
+			registrations.clear();
+			sightings.clear();
+			
+			// Read in the messages (up to the batch limit)
 			for (Long i=0L; i<messageCount && i<BatchLimit; i++) {
 				message = service.receiveMessage(AllMessages);
 
 				if (message instanceof Registration) {
 					System.out.println("Registration:" + message.toString());
 					
-					// Insert into registrations table
-					tableService.singleInsert("registrations", (Registration)message);
+					// Insert into registrations queue
+					registrations.add((Registration)message);			
 					
 				} else if (message instanceof Sighting) {
 					System.out.println("Sighting:" + message.toString());
 					
-					// Insert into sightings table
-					tableService.singleInsert("sightings", (Sighting)message);
+					// Insert into sightings queue
+					sightings.add((Sighting)message);
 					
 				} else {
 					// Do nothing
 				}
 			}
 			
+			// If there are any registrations queued, then insert them
+			if (registrations.size() > 0 ) {
+				tableService.batchInsert("registrations", registrations);
+			}
+			
+			// If there are any sightings queued, then insert them
+			if (sightings.size() > 0) {
+				tableService.batchInsert("sightings", sightings);
+			}
+			
 			try {
 				Thread.sleep(SleepTime);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 				running = false;
 			}
 		}
