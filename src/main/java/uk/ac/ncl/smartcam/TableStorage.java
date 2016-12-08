@@ -3,6 +3,7 @@ package uk.ac.ncl.smartcam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.Queue;
 
 import com.microsoft.azure.storage.*;
 import com.microsoft.azure.storage.table.*;
@@ -63,7 +64,7 @@ public class TableStorage {
 	 * @param table name of the table
 	 * @param entity entity to insert/replace
 	 */
-	public void tableInsert(String table, TableEntity entity) {
+	public void singleInsert(String table, TableEntity entity) {
 		
 	    try {
 	    	// Create a cloud table object for the table
@@ -74,6 +75,36 @@ public class TableStorage {
 
 		    // Submit the operation to the table service
 		    cloudTable.execute(insertEntity);
+		    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Insert or Replace a collection of entities into a table in a batch
+	 * @param table name of the table
+	 * @param entities entity to insert/replace
+	 */
+	public void batchInsert(String table, Queue<TableEntity> entities) {
+		TableEntity entity;		
+		
+	    try {
+	    	// Create a cloud table object for the table
+			CloudTable cloudTable = tableClient.getTableReference(table);
+			
+			// Define a batch operation
+		    TableBatchOperation batchOperation = new TableBatchOperation();
+			
+		    while (entities.size() > 0) {
+		    	entity = entities.poll();
+		    	
+		    	// Add entity to the batch operation
+		    	batchOperation.insertOrReplace(entity);
+		    }
+
+		    // Submit the batch operation to the table service
+		    cloudTable.execute(batchOperation);
 		    
 		} catch (Exception e) {
 			e.printStackTrace();

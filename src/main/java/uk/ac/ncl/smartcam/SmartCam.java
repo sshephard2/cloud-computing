@@ -59,7 +59,6 @@ public class SmartCam {
 		try {
 			service = new ServiceBus();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			return;
 		}
