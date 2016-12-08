@@ -39,8 +39,8 @@ public class Registration extends TableServiceEntity implements Serializable {
 		this.street = street;
 		this.town = town;
 		this.speedlimit = speedlimit;
-        this.partitionKey = id.toString(); // PartitionKey
-        this.rowKey = Long.toString(timestamp.getTime()); // RowKey
+        this.partitionKey = "Registration"; // PartitionKey
+        this.rowKey = id.toString() + Long.toString(timestamp.getTime()); // RowKey
 	}
 	
 	/**
@@ -55,7 +55,6 @@ public class Registration extends TableServiceEntity implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-        this.partitionKey = id.toString(); // PartitionKey
 	}
 	
 	/**
@@ -70,7 +69,6 @@ public class Registration extends TableServiceEntity implements Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = (Date)timestamp.clone();
-        this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 	
 	/**
@@ -113,6 +111,20 @@ public class Registration extends TableServiceEntity implements Serializable {
 	 */
 	public void setSpeedlimit(int speedlimit) {
 		this.speedlimit = speedlimit;
+	}
+	
+	/**
+	 * @return the rowKey
+	 */
+	public String getRowKey() {
+		return rowKey;
+	}
+
+	/**
+	 * @param rowKey the rowKey to set
+	 */
+	public void setRowKey(String rowKey) {
+		this.rowKey = rowKey;
 	}
 
 	/* (non-Javadoc)

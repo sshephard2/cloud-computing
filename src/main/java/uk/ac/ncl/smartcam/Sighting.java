@@ -42,8 +42,8 @@ public class Sighting extends TableServiceEntity implements Serializable {
 		this.vehicletype = vehicletype;
 		this.speed = speed;
 		this.speedlimit = speedlimit;
-		this.partitionKey = id.toString(); // PartitionKey
-		this.rowKey = Long.toString(timestamp.getTime()); // RowKey
+		this.partitionKey = vehicletype ; // PartitionKey
+		this.rowKey = registration + Long.toString(timestamp.getTime()); // RowKey
 	}
 
 	/**
@@ -58,7 +58,6 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-		this.partitionKey = id.toString(); // PartitionKey
 	}
 
 	/**
@@ -73,7 +72,6 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = (Date)timestamp.clone();
-        this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 
 	/**
@@ -130,6 +128,36 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setSpeedlimit(int speedlimit) {
 		this.speedlimit = speedlimit;
+	}
+
+	
+	
+	/**
+	 * @return the partitionKey
+	 */
+	public String getPartitionKey() {
+		return partitionKey;
+	}
+
+	/**
+	 * @param partitionKey the partitionKey to set
+	 */
+	public void setPartitionKey(String partitionKey) {
+		this.partitionKey = partitionKey;
+	}
+
+	/**
+	 * @return the rowKey
+	 */
+	public String getRowKey() {
+		return rowKey;
+	}
+
+	/**
+	 * @param rowKey the rowKey to set
+	 */
+	public void setRowKey(String rowKey) {
+		this.rowKey = rowKey;
 	}
 
 	/* (non-Javadoc)
