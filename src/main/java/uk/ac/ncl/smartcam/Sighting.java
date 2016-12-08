@@ -18,6 +18,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	private String registration;
 	private String vehicletype;
 	private int speed;
+	private int speedlimit;
 
 	/**
 	 * No-arg constructor for Jackson JSON serialization
@@ -32,13 +33,17 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 * @param registration vehicle registration number
 	 * @param vehicletype type of vehicle Car|Truck|Motorcycle
 	 * @param speed speed of vehicle in mph
+	 * @param speedlimit speed limit in mph
 	 */
-	public Sighting(Long id, String registration, String vehicletype, int speed) {
+	public Sighting(Long id, String registration, String vehicletype, int speed, int speedlimit) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;
 		this.vehicletype = vehicletype;
 		this.speed = speed;
+		this.speedlimit = speedlimit;
+		this.partitionKey = registration; // PartitionKey
+		this.rowKey = Long.toString(timestamp.getTime()); // RowKey
 	}
 
 	/**
@@ -53,7 +58,6 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-        this.partitionKey = id.toString(); // PartitionKey
 	}
 
 	/**
@@ -83,6 +87,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setRegistration(String registration) {
 		this.registration = registration;
+        this.partitionKey = registration; // PartitionKey
 	}
 
 	/**
@@ -111,6 +116,20 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 */
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+	
+	/**
+	 * @return the speedlimit
+	 */
+	public int getSpeedlimit() {
+		return speedlimit;
+	}
+	
+	/**
+	 * @param speedlimit the speedlimit to set
+	 */
+	public void setSpeedlimit(int speedlimit) {
+		this.speedlimit = speedlimit;
 	}
 
 	/* (non-Javadoc)

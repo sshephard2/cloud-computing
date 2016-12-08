@@ -105,7 +105,7 @@ public class SmartCam {
 			speed = rndGen.nextInt(2*speedlimit);
 			
 			// Create Sighting object
-			Sighting camSighting = new Sighting(id, registration, vehicletype, speed);
+			Sighting camSighting = new Sighting(id, registration, vehicletype, speed, speedlimit);
 
 			// If speed is greater than speedlimit, then set speeding flag to true
 			speeding = (speed > speedlimit);
