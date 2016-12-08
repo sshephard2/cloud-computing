@@ -1,6 +1,8 @@
 package uk.ac.ncl.smartcam;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import com.microsoft.azure.storage.table.TableEntity;
@@ -38,8 +40,13 @@ public class NoSqlConsumer {
 		
 		Object message;
 		Long messageCount;
-		Queue<TableEntity> registrations = new LinkedList<TableEntity>();
-		Queue<TableEntity> sightings = new LinkedList<TableEntity>();
+		
+		// Create HashMaps of Queues for Registrations and Sightings
+		// This allows a queue to be created for every value of partition key
+		// and ensures that when we use batch insert, we send the queue for each key
+		// i.e. all the entities in the batch have the same partition key
+		Map<String, Queue<TableEntity>> registrations = new HashMap<String, Queue<TableEntity>>();
+		Map<String, Queue<TableEntity>> sightings = new HashMap<String, Queue<TableEntity>>();
 
 		// Run until interrupted
 		boolean running = true;
@@ -50,7 +57,7 @@ public class NoSqlConsumer {
 			messageCount = service.messageCount(AllMessages);
 			System.out.println("Subscription " + AllMessages + ":" + messageCount + " messages");
 			
-			// Clear the queues
+			// Clear the maps
 			registrations.clear();
 			sightings.clear();
 			
@@ -61,28 +68,54 @@ public class NoSqlConsumer {
 				if (message instanceof Registration) {
 					System.out.println("Registration:" + message.toString());
 					
-					// Insert into registrations queue
-					registrations.add((Registration)message);			
+					// Insert into registrations map of queues
+					Registration reg = (Registration)message;
+					String partitionKey = reg.getPartitionKey();
+					Queue<TableEntity> queue = registrations.get(partitionKey);
+					// If there isn't already a queue for this partition key, create one
+					if (queue == null) {
+						queue = new LinkedList<TableEntity>();
+						registrations.put(partitionKey, queue);
+					}		
+					queue.add((Registration)message);			
 					
 				} else if (message instanceof Sighting) {
 					System.out.println("Sighting:" + message.toString());
 					
-					// Insert into sightings queue
-					sightings.add((Sighting)message);
+					// Insert into sightings map of queues
+					Sighting sight = (Sighting)message;
+					String partitionKey = sight.getPartitionKey();
+					// If there isn't already a queue for this partition key, create one
+					Queue<TableEntity> queue = sightings.get(partitionKey);
+					if (queue == null) {
+						queue = new LinkedList<TableEntity>();
+						sightings.put(partitionKey, queue);
+					}
+					queue.add((Sighting)message);
 					
 				} else {
 					// Do nothing
 				}
 			}
 			
-			// If there are any registrations queued, then insert them
-			if (registrations.size() > 0 ) {
-				tableService.batchInsert("registrations", registrations);
+			// Partition keys and records in each?
+			for (String key: registrations.keySet()) {
+				System.out.println("Registration key " + key + "," + registrations.get(key).size() + " values");
 			}
 			
+			// Partition keys and records in each?
+			for (String key: sightings.keySet()) {
+				System.out.println("Sighting key " + key + "," + sightings.get(key).size() + " values");
+			}
+			
+			// If there are any registrations queued, then insert them
+			for (Queue<TableEntity> queue: registrations.values()) {
+				tableService.batchInsert("registrations", queue);
+			}
+						
 			// If there are any sightings queued, then insert them
-			if (sightings.size() > 0) {
-				tableService.batchInsert("sightings", sightings);
+			for (Queue<TableEntity> queue: sightings.values()) {
+				tableService.batchInsert("sightings", queue);
 			}
 			
 			try {
