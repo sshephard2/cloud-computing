@@ -19,7 +19,7 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 	private String vehicletype;
 	private int speed;
 	private int speedlimit;
-	private boolean priority;
+	private String priority;
 
 	/**
 	 * No-arg constructor for Jackson JSON serialization
@@ -134,14 +134,14 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 	/**
 	 * @return the priority
 	 */
-	public boolean isPriority() {
+	public String getPriority() {
 		return priority;
 	}
 
 	/**
 	 * @param priority the priority to set
 	 */
-	public void setPriority(boolean priority) {
+	public void setPriority(String priority) {
 		this.priority = priority;
 	}
 
