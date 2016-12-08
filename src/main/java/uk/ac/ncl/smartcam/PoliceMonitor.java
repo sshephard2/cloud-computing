@@ -75,7 +75,8 @@ public class PoliceMonitor {
 					String vehicletype = sight.getVehicletype();
 					int speed = sight.getSpeed();
 					int speedlimit = sight.getSpeedlimit();
-					SpeedingVehicle speeding = new SpeedingVehicle(id, registration, vehicletype, speed, speedlimit);				
+					SpeedingVehicle speeding = new SpeedingVehicle(id, registration, vehicletype, speed, speedlimit);
+					speeding.setTimestamp(timestamp); // Overwrite with the timestamp we received
 					
 					// Is the vehicle speed more than 10% over the speedlimit?
 					// Using integer arithmetic, if 11*speed>10*speedlimit
