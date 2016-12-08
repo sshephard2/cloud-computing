@@ -14,7 +14,7 @@ public class NoSqlConsumer {
 	
 	private static final String AllMessages = "AllMessages";
 	private static final long BatchLimit = 100L;
-	private static final int SleepTime = 10000; // 10 seconds
+	private static final int MaxPollTime = 60; // maximum time between polls in seconds
 	
 	public static void main(String[] args) {
 		
@@ -86,7 +86,10 @@ public class NoSqlConsumer {
 			}
 			
 			try {
-				Thread.sleep(SleepTime);
+				// Simple formula that determines the polling time based on how many messages we last received
+				// If we had a full maximum batch, then polling time is zero
+				// If we had no messages, we wait the maximum polling time
+				Thread.sleep(MaxPollTime*10*Math.max(0, BatchLimit-messageCount));
 			} catch (InterruptedException e) {
 				running = false;
 			}
