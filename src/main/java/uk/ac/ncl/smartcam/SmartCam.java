@@ -96,14 +96,10 @@ public class SmartCam {
 			}
 			
 			// Registration
-			registration = String.valueOf((char)(rndGen.nextInt(26) + 'A'));
-			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = "AB";
 			registration = registration + rndGen.nextInt(10);
 			registration = registration + rndGen.nextInt(10);
-			registration = registration + " ";
-			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
-			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
-			registration = registration + String.valueOf((char)(rndGen.nextInt(26) + 'A'));
+			registration = registration + " DEF";
 			
 			// Speed
 			speed = rndGen.nextInt(2*speedlimit);
