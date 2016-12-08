@@ -122,7 +122,7 @@ public class ServiceBus {
 				msgQueue.add(message);
 			}
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 	
