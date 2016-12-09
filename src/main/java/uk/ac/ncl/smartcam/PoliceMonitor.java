@@ -75,13 +75,15 @@ public class PoliceMonitor {
 					String vehicletype = sight.getVehicletype();
 					int speed = sight.getSpeed();
 					int speedlimit = sight.getSpeedlimit();
-					SpeedingVehicle speeding = new SpeedingVehicle(id, registration, vehicletype, speed, speedlimit);				
+					SpeedingVehicle speeding = new SpeedingVehicle(id, registration, vehicletype, speed, speedlimit);
+					speeding.setTimestamp(timestamp); // Overwrite with the timestamp we received
 					
 					// Is the vehicle speed more than 10% over the speedlimit?
 					// Using integer arithmetic, if 11*speed>10*speedlimit
 					// Then speed is greater than speedlimit*1.1
 					if (10*speeding.getSpeed() > 11*speeding.getSpeedlimit()) {
-						speeding.setPriority(true);
+						speeding.setPriority("PRIORITY");
+						System.out.println("PRIORITY");
 					}
 					
 					// Insert into sightings map of queues
@@ -92,7 +94,7 @@ public class PoliceMonitor {
 						queue = new LinkedList<TableEntity>();
 						speedingVehicles.put(partitionKey, queue);
 					}
-					queue.add((Sighting)message);
+					queue.add(speeding);
 					
 				} else {
 					// Do nothing
@@ -105,9 +107,9 @@ public class PoliceMonitor {
 			}
 						
 			// If there are any speedingvehicles queued, then insert them
-//			for (Queue<TableEntity> queue: speedingVehicles.values()) {
-//				tableService.batchInsert("sightings", queue);
-//			}
+			for (Queue<TableEntity> queue: speedingVehicles.values()) {
+				tableService.batchInsert("speedingvehicles", queue);
+			}
 			
 			try {
 				// Simple formula that determines the polling time based on how many messages we last received
