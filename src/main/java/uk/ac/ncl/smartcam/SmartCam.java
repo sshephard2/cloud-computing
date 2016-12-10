@@ -95,10 +95,14 @@ public class SmartCam {
 			}
 			
 			// Registration
-			registration = "AB";
-			registration = registration + rndGen.nextInt(10);
-			registration = registration + rndGen.nextInt(10);
-			registration = registration + " DEF";
+			// This is generating a limited degree of random registration numbers
+			// So that there are likely to be multiple sightings of a number
+			// The second digit will vary from 0-2 to ensure that registrations are
+			// between 2000-2002 to keep the number of partition keys low
+			registration = "AB0";
+			registration = registration + rndGen.nextInt(3);
+			registration = registration + " DE";
+			registration = registration + (char) (rndGen.nextInt(26) + 'A');
 			
 			// Speed
 			speed = rndGen.nextInt(2*speedlimit);

@@ -19,6 +19,16 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	private String vehicletype;
 	private int speed;
 	private int speedlimit;
+	
+	/**
+	 * Returns the year a vehicle was registered (from the registration number)
+	 * @param registration
+	 * @return
+	 */
+	private int registrationYear(String registration) {
+		// Actual rules are more complex than this, this is a huge simplification
+		return 2000 + Integer.parseInt(registration.substring(2, 4));
+	}
 
 	/**
 	 * No-arg constructor for Jackson JSON serialization
@@ -42,7 +52,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 		this.vehicletype = vehicletype;
 		this.speed = speed;
 		this.speedlimit = speedlimit;
-		this.partitionKey = vehicletype ; // PartitionKey
+		this.partitionKey = "SightingVehicle" + registrationYear(registration) ; // PartitionKey
 		this.rowKey = registration + Long.toString(timestamp.getTime()); // RowKey
 	}
 

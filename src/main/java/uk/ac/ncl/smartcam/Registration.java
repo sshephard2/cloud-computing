@@ -39,7 +39,7 @@ public class Registration extends TableServiceEntity implements Serializable {
 		this.street = street;
 		this.town = town;
 		this.speedlimit = speedlimit;
-        this.partitionKey = "Registration"; // PartitionKey
+        this.partitionKey = "Registration" + id/10000; // PartitionKey
         this.rowKey = id.toString() + Long.toString(timestamp.getTime()); // RowKey
 	}
 	
