@@ -14,7 +14,7 @@ In addition there are a series of Python scripts that can perform simple tests t
 
     SendTestAzureServiceBus.py
     RecAllTestAzureServiceBus.py
-    RecSightingTestAzureServiceBus.py
+    RecVehCheckTestAzureServiceBus.py
     RecSpeedingTestAzureServiceBus.py
 
 Before building the Smart Camera applications, the `config.properties` file under `src/main/resources` must be configured with the Microsoft Azure Service Bus and Table Account login details:
