@@ -54,6 +54,7 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 		this.vehicletype = vehicletype;
 		this.speed = speed;
 		this.speedlimit = speedlimit;
+		this.priority = priority;
 		this.partitionKey = "SpeedingVehicle" + registrationYear(registration) ; // PartitionKey
 		this.rowKey = registration + Long.toString(timestamp.getTime()); // RowKey
 	}
