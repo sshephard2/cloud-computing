@@ -10,6 +10,13 @@ To set up the Azure table storage, run the Python script:
 
     CreateAzureTableStorage.py
 
+In addition there are a series of Python scripts that can perform simple tests to validate that the topic and subscriptions have been created correctly, by sending and consuming messages.
+
+    SendTestAzureServiceBus.py
+    RecAllTestAzureServiceBus.py
+    RecSightingTestAzureServiceBus.py
+    RecSpeedingTestAzureServiceBus.py
+
 Before building the Smart Camera applications, the `config.properties` file under `src/main/resources` must be configured with the Microsoft Azure Service Bus and Table Account login details:
 
 	# Service Bus API config details
@@ -38,3 +45,16 @@ To start the NoSQL Consumer worker application on a virtual machine:
 To start the Police Monitor worker application on a virtual machine:
 
     java -cp target/SmartCam-0.0.1-SNAPSHOT-jar-with-dependencies uk.ac.ncl.smartcam.PoliceMonitor
+
+## Queries
+
+The queries are implemented in Python.
+
+To query for all camera registrations use:
+
+    CameraRegistrationsQuery.py
+
+To query for all sightings of a all priority speeding vehicles use:
+
+    PriorityVehiclesQuery.py
+	
