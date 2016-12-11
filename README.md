@@ -10,6 +10,21 @@ To set up the Azure table storage, run the Python script:
 
     CreateAzureTableStorage.py
 
+Before building the Smart Camera applications, the `config.properties` file under `src/main/resources` must be configured with the Microsoft Azure Service Bus and Table Account login details:
+
+	# Service Bus API config details
+	
+	ServiceBusNamespace = <your namespace>
+	ServiceBusKey = <your namespace key>
+	Topic = cameratopic
+	ReceiveTimeout = 5
+	TableAccountName = <your table account name>
+	TableAccountKey = <your table account key>
+
+The applications may then be built using Maven:
+
+    mvn clean package
+
 ## Running
 
 To start up a Smart Camera and pass in the command line parameters camera id, street, town/city, speed limit, rate of traffic (vehicles per minute):
