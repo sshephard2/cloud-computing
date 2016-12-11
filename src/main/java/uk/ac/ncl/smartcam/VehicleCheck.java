@@ -5,7 +5,7 @@ import uk.ac.ncl.smartcam.ServiceBus;
 
 public class VehicleCheck {
 	
-	private static final String Sightings = "AllSightings";
+	private static final String VehCheck = "VehCheck";
 	
 	/**
 	 * Simulated Vehicle Check
@@ -39,10 +39,10 @@ public class VehicleCheck {
 		while(running) {
 			
 			// How many messages in the subscription?
-			messageCount = service.messageCount(Sightings);
-			System.out.println("Subscription " + Sightings + ":" + messageCount + " messages");
+			messageCount = service.messageCount(VehCheck);
+			System.out.println("Subscription " + VehCheck + ":" + messageCount + " messages");
 			
-			message = service.receiveMessage(Sightings);
+			message = service.receiveMessage(VehCheck);
 
 			if (message instanceof Sighting) {
 				System.out.println("Sighting:" + message.toString());

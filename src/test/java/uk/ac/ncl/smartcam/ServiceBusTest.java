@@ -33,10 +33,10 @@ public class ServiceBusTest {
 				// Consume message and throw away
 				Object message = service.receiveMessage("Speeding");
 			}
-			messageCount = service.messageCount("AllSightings");
+			messageCount = service.messageCount("VehCheck");
 			for (long i=0L; i<messageCount; i++) {
 				// Consume message and throw away
-				Object message = service.receiveMessage("AllSightings");
+				Object message = service.receiveMessage("VehCheck");
 			}
 		} catch (Exception e) {
 			fail("Unexpected exception:" + e.getStackTrace());
@@ -64,32 +64,7 @@ public class ServiceBusTest {
 		}
 	}
 
-	/**
-	 * Test method for {@link uk.ac.ncl.smartcam.ServiceBus#sendMessage(java.lang.Object, java.lang.String, boolean)}.
-	 */
-	@Test
-	public void testSendReceiveSightingMessage() {
-		// Create Smart Camera Sighting object
-		Sighting sight = new Sighting(9999L, "TE01 TES", "Car", 29, 30);
-		ServiceBus service;
-		try {
-			service = new ServiceBus();
-			// Send message
-			service.sendMessage(sight, "Sighting", false);
-			
-			// Receive message from AllMessages
-			Sighting message = (Sighting)service.receiveMessage("AllMessages");
-			assertEquals("Failure - messages are not equal", message.getRowKey(), sight.getRowKey());
-			
-			// Receive message from AllSightings
-			message = (Sighting)service.receiveMessage("AllSightings");
-			assertEquals("Failure - messages are not equal", message.getRowKey(), sight.getRowKey());
-			
-		} catch (Exception e) {
-			fail("Unexpected exception:" + e.getStackTrace());
-		}
-	}
-	
+
 	/**
 	 * Test method for {@link uk.ac.ncl.smartcam.ServiceBus#sendMessage(java.lang.Object, java.lang.String, boolean)}.
 	 */
@@ -107,8 +82,8 @@ public class ServiceBusTest {
 			Sighting message = (Sighting)service.receiveMessage("AllMessages");
 			assertEquals("Failure - messages are not equal", message.getRowKey(), sight.getRowKey());
 			
-			// Receive message from AllSightings
-			message = (Sighting)service.receiveMessage("AllSightings");
+			// Receive message from VehCheck
+			message = (Sighting)service.receiveMessage("VehCheck");
 			assertEquals("Failure - messages are not equal", message.getRowKey(), sight.getRowKey());
 			
 			// Receive message from Speeding
@@ -140,7 +115,7 @@ public class ServiceBusTest {
 			// Message count
 			long messageCount = service.messageCount("AllMessages");
 			assertEquals("Failure - count is incorrect", 10L, messageCount);
-			messageCount = service.messageCount("AllSightings");
+			messageCount = service.messageCount("VehCheck");
 			assertEquals("Failure - count is incorrect", 0L, messageCount);
 			messageCount = service.messageCount("Speeding");
 			assertEquals("Failure - count is incorrect", 0L, messageCount);
@@ -152,41 +127,7 @@ public class ServiceBusTest {
 			fail("Unexpected exception:" + e.getStackTrace());
 		}
 	}
-	
-	/**
-	 * Test method for {@link uk.ac.ncl.smartcam.ServiceBus#messageCount(java.lang.String)}.
-	 */
-	@Test
-	public void testMessageCountSightingMessages() {
-		// Create Smart Camera Sighting object
-		Sighting[] sight = new Sighting[10];
-		for (int i=0; i<10; i++) {
-			sight[i] = new Sighting(Long.valueOf(i), "TE0" + i + " TES", "Truck", 30+(i/3*10)-i, 30+(i/3*10));
-		}
-		ServiceBus service;
-		try {
-			service = new ServiceBus();
-			for (int i=0; i<10; i++) {
-				// Send messages
-				service.sendMessage(sight[i], "Sighting", false);
-			}
-			// Message count
-			long messageCount = service.messageCount("AllMessages");
-			assertEquals("Failure - count is incorrect", 10L, messageCount);
-			messageCount = service.messageCount("AllSightings");
-			assertEquals("Failure - count is incorrect", 10L, messageCount);
-			messageCount = service.messageCount("Speeding");
-			assertEquals("Failure - count is incorrect", 0L, messageCount);
-			
-			// Tidy up after test
-			clearSubscriptions();
-			
-		} catch (Exception e) {
-			fail("Unexpected exception:" + e.getStackTrace());
-		}
-	}
-	
-	
+		
 	/**
 	 * Test method for {@link uk.ac.ncl.smartcam.ServiceBus#messageCount(java.lang.String)}.
 	 */
@@ -207,7 +148,7 @@ public class ServiceBusTest {
 			// Message count
 			long messageCount = service.messageCount("AllMessages");
 			assertEquals("Failure - count is incorrect", 10L, messageCount);
-			messageCount = service.messageCount("AllSightings");
+			messageCount = service.messageCount("VehCheck");
 			assertEquals("Failure - count is incorrect", 10L, messageCount);
 			messageCount = service.messageCount("Speeding");
 			assertEquals("Failure - count is incorrect", 10L, messageCount);
