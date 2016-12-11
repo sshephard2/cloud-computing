@@ -32,11 +32,13 @@ The applications may then be built using Maven:
 
     mvn clean package
 
+After this, there is a bug in the Microsoft Azure libraries that causes a duplicate config file to be added to the jar file produced.  Open the jar file and remove the smaller version of `com.microsoft.windowsazure.core.Builder$Exports` from the `META-INF\services\` directory.
+
 ## Running
 
 To start up a Smart Camera and pass in the command line parameters camera id, street, town/city, speed limit, rate of traffic (vehicles per minute):
 
-    java -cp target/SmartCam-0.0.1-SNAPSHOT-jar-with-dependencies uk.ac.ncl.smartcam.SmartCam id street town speedlimit rate
+    java -cp target\SmartCam-0.0.1-SNAPSHOT-jar-with-dependencies.jar uk.ac.ncl.smartcam.SmartCam id street town speedlimit rate
 
 To start the NoSQL Consumer worker application on a virtual machine:
 
