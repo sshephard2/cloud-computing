@@ -39,14 +39,15 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 	}
 	
 	/**
-	 * Constructor for Smart Camera Sighting message
+	 * Constructor for Smart Camera Speeding Vehicles message
 	 * @param id camera id
 	 * @param registration vehicle registration number
 	 * @param vehicletype type of vehicle Car|Truck|Motorcycle
 	 * @param speed speed of vehicle in mph
 	 * @param speedlimit speed limit in mph
+	 * @param priority PRIORITY if this is a priority speeding vehicle
 	 */
-	public SpeedingVehicle(Long id, String registration, String vehicletype, int speed, int speedlimit) {
+	public SpeedingVehicle(Long id, String registration, String vehicletype, int speed, int speedlimit, String priority) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;

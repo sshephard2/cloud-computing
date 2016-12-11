@@ -2,6 +2,7 @@ package uk.ac.ncl.smartcam;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.Queue;
 
@@ -109,6 +110,20 @@ public class TableStorage {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Query method
+	 * @param table name of the table
+	 * @param query query passed in as TableOperation
+	 * @return a TableEntity object
+	 * @throws URISyntaxException
+	 * @throws StorageException
+	 */
+	public TableEntity query(String table, TableOperation query) throws URISyntaxException, StorageException {
+		CloudTable cloudTable = tableClient.getTableReference(table);
+		TableEntity result = cloudTable.execute(query).getResultAsType();
+		return result;
 	}
 	
 }
