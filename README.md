@@ -54,7 +54,7 @@ To query for all camera registrations use:
 
     CameraRegistrationsQuery.py
 
-To query for all sightings of a all priority speeding vehicles use:
+To query for all sightings of all priority speeding vehicles use:
 
     PriorityVehiclesQuery.py
 	
