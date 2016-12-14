@@ -15,7 +15,7 @@ public class VehicleCheck {
 	 */
 	private static boolean isVehicleStolen(String vehicleRegistration) throws InterruptedException
 	{
-	    // Thread.sleep(5000);
+	    Thread.sleep(5000);
 	    return (Math.random() < 0.95);
 	}
 	
