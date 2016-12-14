@@ -69,7 +69,7 @@ public class PoliceMonitor {
 					
 					// Convert Sighting message to SpeedingVehicle entity
 					Sighting sight = (Sighting)message;
-					Long id = sight.getId();
+					String id = sight.getId();
 					Date timestamp = sight.getTimestamp();
 					String registration = sight.getRegistration();
 					String vehicletype = sight.getVehicletype();

@@ -13,7 +13,7 @@ import com.microsoft.azure.storage.table.TableServiceEntity;
 public class SpeedingVehicle extends TableServiceEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	private Long id;
+	private String id;
 	private Date timestamp;
 	private String registration;
 	private String vehicletype;
@@ -47,7 +47,7 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 	 * @param speedlimit speed limit in mph
 	 * @param priority PRIORITY if this is a priority speeding vehicle
 	 */
-	public SpeedingVehicle(Long id, String registration, String vehicletype, int speed, int speedlimit, String priority) {
+	public SpeedingVehicle(String id, String registration, String vehicletype, int speed, int speedlimit, String priority) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;
@@ -62,14 +62,14 @@ public class SpeedingVehicle extends TableServiceEntity implements Serializable 
 	/**
 	 * @return the id
 	 */
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

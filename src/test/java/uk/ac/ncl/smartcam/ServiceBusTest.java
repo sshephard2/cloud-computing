@@ -71,7 +71,7 @@ public class ServiceBusTest {
 	@Test
 	public void testSendReceiveSpeedingMessage() {
 		// Create Smart Camera Sighting object
-		Sighting sight = new Sighting(12001L, "TE02 TES", "Motorcycle", 40, 30);
+		Sighting sight = new Sighting("TEST1200", "TE02 TES", "Motorcycle", 40, 30);
 		ServiceBus service;
 		try {
 			service = new ServiceBus();
@@ -136,7 +136,7 @@ public class ServiceBusTest {
 		// Create Smart Camera Sighting object
 		Sighting[] sight = new Sighting[10];
 		for (int i=0; i<10; i++) {
-			sight[i] = new Sighting(Long.valueOf(i), "TE0" + i + " TES", "Car", 31+(i/3*10)+i, 30+(i/3*10));
+			sight[i] = new Sighting("TEST" + i, "TE0" + i + " TES", "Car", 31+(i/3*10)+i, 30+(i/3*10));
 		}
 		ServiceBus service;
 		try {

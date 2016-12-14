@@ -13,7 +13,7 @@ import com.microsoft.azure.storage.table.TableServiceEntity;
 public class Sighting extends TableServiceEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	private Long id;
+	private String id;
 	private Date timestamp;
 	private String registration;
 	private String vehicletype;
@@ -45,7 +45,7 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	 * @param speed speed of vehicle in mph
 	 * @param speedlimit speed limit in mph
 	 */
-	public Sighting(Long id, String registration, String vehicletype, int speed, int speedlimit) {
+	public Sighting(String id, String registration, String vehicletype, int speed, int speedlimit) {
 		this.id = id;
 		this.timestamp = new Date();
 		this.registration = registration;
@@ -59,14 +59,14 @@ public class Sighting extends TableServiceEntity implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

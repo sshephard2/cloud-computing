@@ -56,7 +56,7 @@ public class TableStorageTest {
 	@Test
 	public void testSingleInsertSighting() {
 		// Create Smart Camera Sighting object
-		Sighting sight = new Sighting(9999L, "TE01 TES", "Car", 29, 30);
+		Sighting sight = new Sighting("TEST9999", "TE01 TES", "Car", 29, 30);
 		
 		// Connect to Azure Table Storage
 		TableStorage tableService;
@@ -83,7 +83,7 @@ public class TableStorageTest {
 	@Test
 	public void testSingleInsertSpeedingVehicle() {
 		// Create Smart Camera SpeedingVehicle object
-		SpeedingVehicle speeding = new SpeedingVehicle(9999L, "TE01 TES", "Car", 40, 30, "PRIORITY");
+		SpeedingVehicle speeding = new SpeedingVehicle("TEST9999", "TE01 TES", "Car", 40, 30, "PRIORITY");
 		
 		// Connect to Azure Table Storage
 		TableStorage tableService;
@@ -143,7 +143,7 @@ public class TableStorageTest {
 		// Create Smart Camera Sighting objects
 		Queue<TableEntity> queue = new LinkedList<TableEntity>();
 		for (int i=0; i<10; i++) {
-			queue.add(new Sighting(Long.valueOf(i), "TE01 TE" + (char) (i + 'A'), "Truck", 30+(i/3*10)-i, 30+(i/3*10)));
+			queue.add(new Sighting("TEST" + i, "TE01 TE" + (char) (i + 'A'), "Truck", 30+(i/3*10)-i, 30+(i/3*10)));
 		}
 		Queue<TableEntity> queueCopy = new LinkedList<TableEntity>(queue);
 		
@@ -174,7 +174,7 @@ public class TableStorageTest {
 		// Create Smart Camera SpeedingVehicle objects
 		Queue<TableEntity> queue = new LinkedList<TableEntity>();
 		for (int i=0; i<10; i++) {
-			queue.add(new SpeedingVehicle(Long.valueOf(i), "TE01 TE" + (char) (i + 'A'), "Car", 40+(i/3*10)+i, 30+(i/3*10), "PRIORITY"));
+			queue.add(new SpeedingVehicle("TEST"+ i , "TE01 TE" + (char) (i + 'A'), "Car", 40+(i/3*10)+i, 30+(i/3*10), "PRIORITY"));
 		}
 		Queue<TableEntity> queueCopy = new LinkedList<TableEntity>(queue);
 		
