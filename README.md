@@ -7,7 +7,7 @@ This coursework assignment was the design and implementation of a simulated Smar
 
 ## Design
 
-See the design [here](design.md).
+See the design [here](Design.md).
 
 ## Installation
 
