@@ -1,6 +1,28 @@
-# Smart Camera
+# Smart Camera application for Cloud Computing Assignment
+
+This coursework assignment was the design and implementation of a simulated Smart Speed Camera application using Microsoft Azure cloud services, specifically:
+
+* Azure Service Bus topics and subscriptions
+* Azure Table storage
+
+## Design
+
+See the design [here](design.md).
 
 ## Installation
+
+The Azure services are set up and configured using Python scripts.  Before running these, the module `AzureCredentials.py` must be configured with the Microsoft Azure Service Bus and Table Account login details:
+	
+	# ServiceBusService credentials
+	
+	svcbus_namespace = <your namespace>
+	svcbus_keyname = <your namespace key name>
+	svcbus_keyvalue = <your namespace key value>
+	
+	# TableService credentials
+	
+	table_accountname = <your table account name>
+	table_accountkey = <your table account key>
 
 To set up the Camera topic and subscriptions for the first time, run the Python script:
 
